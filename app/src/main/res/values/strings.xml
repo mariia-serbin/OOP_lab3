@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FitTracker</string>
+    <string name="steps">Кроки</string>
+    <string name="calories">Калорії</string>
+    <string name="distance">Дистанція</string>
+    <string name="steps_value">%1$d</string>
+    <string name="calories_value">%1$.1f ккал</string>
+    <string name="distance_value">%1$.2f км</string>
+    <string name="start">Почати</string>
+    <string name="stop">Зупинити</string>
+    <string name="reset">Скинути</string>
+    <string name="language">Мова</string>
+    <string name="language_uk">Українська</string>
+    <string name="language_en">English</string>
+    <string name="notification_title">Трекер активності</string>
+    <string name="notification_text">Кроки: %1$d · Дистанція: %2$.2f км</string>
+    <string name="channel_name">Відстеження активності</string>
+    <string name="activity_permission_title">Дозвіл на активність</string>
+    <string name="activity_permission_message">Для точного підрахунку кроків потрібен доступ до даних фізичної активності.</string>
+    <string name="notifications_permission_title">Сповіщення</string>
+    <string name="notifications_permission_message">Для фонового відстеження потрібні сповіщення.</string>
+    <string name="permission_denied">Дозвіл відхилено</string>
 </resources>

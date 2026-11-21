@@ -3,6 +3,7 @@ package com.fit.tracker;
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
 
+import com.fit.tracker.util.LocaleHelper;
 import com.fit.tracker.util.ReleaseTree;
 import timber.log.Timber;
 
@@ -16,6 +17,7 @@ public class App extends Application {
         } else {
             Timber.plant(new ReleaseTree());
         }
+        LocaleHelper.applyStartupLocale();
         Timber.i("App started");
     }
 }

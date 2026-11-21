@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FitTracker</string>
+    <string name="steps">Steps</string>
+    <string name="calories">Calories</string>
+    <string name="distance">Distance</string>
+    <string name="steps_value">%1$d</string>
+    <string name="calories_value">%1$.1f kcal</string>
+    <string name="distance_value">%1$.2f km</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
+    <string name="language">Language</string>
+    <string name="language_uk">Українська</string>
+    <string name="language_en">English</string>
+    <string name="notification_title">Activity tracker</string>
+    <string name="notification_text">Steps: %1$d · Distance: %2$.2f km</string>
+    <string name="channel_name">Activity tracking</string>
+    <string name="activity_permission_title">Activity permission</string>
+    <string name="activity_permission_message">Physical activity data is needed for accurate step counting.</string>
+    <string name="notifications_permission_title">Notifications</string>
+    <string name="notifications_permission_message">Notifications are needed for background tracking.</string>
+    <string name="permission_denied">Permission denied</string>
+</resources>
