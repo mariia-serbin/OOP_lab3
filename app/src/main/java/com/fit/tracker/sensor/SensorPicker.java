@@ -11,12 +11,16 @@ public final class SensorPicker {
     }
 
     public static StepSensor create(Context context) {
+        return create(context, true);
+    }
+
+    public static StepSensor create(Context context, boolean stepCounterAllowed) {
         SensorManager manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         if (manager == null) {
             throw new IllegalStateException("SensorManager unavailable");
         }
 
-        if (manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+        if (stepCounterAllowed && manager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
             Timber.i("Step counter selected");
             return new StepCounter(manager);
         }
