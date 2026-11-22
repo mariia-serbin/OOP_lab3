@@ -1,6 +1,7 @@
 package com.fit.tracker.service;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -123,11 +124,12 @@ public class TrackerService extends Service {
         Timber.i("Tracking stopped");
     }
 
+    @SuppressLint("MissingPermission")
     private void publish() {
         Intent intent = new Intent(ACTION_STEPS_CHANGED).setPackage(getPackageName());
         intent.putExtra(EXTRA_STEPS, store.getSteps());
         sendBroadcast(intent);
-        if (running) {
+        if (running && hasNotificationPermission(this)) {
             NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, buildNotification());
         }
     }

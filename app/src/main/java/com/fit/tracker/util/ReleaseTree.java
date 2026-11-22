@@ -1,9 +1,11 @@
 package com.fit.tracker.util;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import timber.log.Timber;
 
+@SuppressLint("LogNotTimber")
 public class ReleaseTree extends Timber.Tree {
     private static final String DEFAULT_TAG = "FitTracker";
 

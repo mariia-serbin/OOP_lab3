@@ -1,6 +1,7 @@
 package com.fit.tracker.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         startTracking();
     }
 
+    @SuppressLint("InlinedApi")
     private void requestActivityPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACTIVITY_RECOGNITION)) {
             new AlertDialog.Builder(this)
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         activityPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
     }
 
+    @SuppressLint("InlinedApi")
     private void requestNotificationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
             new AlertDialog.Builder(this)
