@@ -13,6 +13,14 @@
     <string name="language">Мова</string>
     <string name="language_uk">Українська</string>
     <string name="language_en">English</string>
+    <string name="profile">Профіль</string>
+    <string name="profile_title">Дані користувача</string>
+    <string name="height">Ріст (см)</string>
+    <string name="weight">Вага (кг)</string>
+    <string name="save">Зберегти</string>
+    <string name="later">Пізніше</string>
+    <string name="invalid_height">Дозволений ріст: 100–250 см</string>
+    <string name="invalid_weight">Дозволена вага: 30–300 кг</string>
     <string name="notification_title">Трекер активності</string>
     <string name="notification_text">Кроки: %1$d · Дистанція: %2$.2f км</string>
     <string name="channel_name">Відстеження активності</string>

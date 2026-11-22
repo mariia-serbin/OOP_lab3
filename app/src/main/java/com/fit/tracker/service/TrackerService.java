@@ -29,13 +29,16 @@ public class TrackerService extends Service {
     public static final String ACTION_START = "com.fit.tracker.START";
     public static final String ACTION_STOP = "com.fit.tracker.STOP";
     public static final String ACTION_RESET = "com.fit.tracker.RESET";
+    public static final String ACTION_REFRESH = "com.fit.tracker.REFRESH";
     public static final String ACTION_STEPS_CHANGED = "com.fit.tracker.STEPS_CHANGED";
     public static final String ACTION_STATE_CHANGED = "com.fit.tracker.STATE_CHANGED";
     public static final String EXTRA_STEPS = "steps";
+    public static final String EXTRA_ACTIVE_MS = "active_ms";
     public static final String EXTRA_RUNNING = "running";
 
     private static final String CHANNEL_ID = "tracking";
     private static final int NOTIFICATION_ID = 1;
+    private static final long MAX_STEP_GAP_MS = 10_000L;
 
     private Store store;
     private StepSensor sensor;
@@ -60,6 +63,18 @@ public class TrackerService extends Service {
             store.reset();
             publish();
             Timber.i("Session reset");
+            if (!running) {
+                stopSelf();
+                return START_NOT_STICKY;
+            }
+            return START_STICKY;
+        }
+        if (ACTION_REFRESH.equals(action)) {
+            publish();
+            if (!running) {
+                stopSelf();
+                return START_NOT_STICKY;
+            }
             return START_STICKY;
         }
         startTracking();
@@ -103,8 +118,14 @@ public class TrackerService extends Service {
         }
         sensor = SensorPicker.create(this, hasActivityPermission(this));
         running = true;
+        store.setLastStepTimeMs(0L);
         sensor.start(steps -> {
-            long total = store.addSteps(steps);
+            long eventTimeMs = System.currentTimeMillis();
+            long previous = store.getLastStepTimeMs();
+            long durationMs = previous > 0L && eventTimeMs > previous
+                    ? Math.min(eventTimeMs - previous, MAX_STEP_GAP_MS)
+                    : 0L;
+            long total = store.addSteps(steps, durationMs, eventTimeMs);
             publish();
             Timber.d("Steps updated: %d", total);
         });
@@ -128,6 +149,7 @@ public class TrackerService extends Service {
     private void publish() {
         Intent intent = new Intent(ACTION_STEPS_CHANGED).setPackage(getPackageName());
         intent.putExtra(EXTRA_STEPS, store.getSteps());
+        intent.putExtra(EXTRA_ACTIVE_MS, store.getActiveMs());
         sendBroadcast(intent);
         if (running && hasNotificationPermission(this)) {
             NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, buildNotification());
@@ -141,7 +163,7 @@ public class TrackerService extends Service {
     }
 
     private Notification buildNotification() {
-        Metrics metrics = Calculator.calculate(store.getSteps());
+        Metrics metrics = Calculator.calculate(store.getSteps(), store.getProfile(), store.getActiveMs());
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(getString(R.string.notification_title))

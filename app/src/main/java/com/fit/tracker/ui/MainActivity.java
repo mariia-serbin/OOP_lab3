@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import com.fit.tracker.R;
 import com.fit.tracker.data.Store;
 import com.fit.tracker.domain.Calculator;
 import com.fit.tracker.domain.Metrics;
+import com.fit.tracker.domain.UserProfile;
 import com.fit.tracker.service.TrackerService;
 import com.fit.tracker.util.LocaleHelper;
 
@@ -49,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private final BroadcastReceiver stepsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            render(intent.getLongExtra(TrackerService.EXTRA_STEPS, 0L));
+            render(intent.getLongExtra(TrackerService.EXTRA_STEPS, 0L),
+                    intent.getLongExtra(TrackerService.EXTRA_ACTIVE_MS, 0L));
         }
     };
 
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         languageGroup = findViewById(R.id.languageGroup);
 
         store = new Store(this);
-        render(store.getSteps());
+        render(store.getSteps(), store.getActiveMs());
         setRunning(false);
 
         int checked = LocaleHelper.ENGLISH.equals(LocaleHelper.current())
@@ -105,9 +109,13 @@ public class MainActivity extends AppCompatActivity {
         });
         findViewById(R.id.resetButton).setOnClickListener(view -> {
             startService(new Intent(this, TrackerService.class).setAction(TrackerService.ACTION_RESET));
-            render(0L);
+            render(0L, 0L);
         });
+        findViewById(R.id.profileButton).setOnClickListener(view -> showProfileDialog());
 
+        if (store.shouldPromptProfile()) {
+            showProfileDialog();
+        }
         Timber.i("MainActivity created");
     }
 
@@ -192,10 +200,59 @@ public class MainActivity extends AppCompatActivity {
         statusText.setText(active ? R.string.tracking_active : R.string.tracking_stopped);
     }
 
-    private void render(long steps) {
-        Metrics metrics = Calculator.calculate(steps);
+    private void render(long steps, long activeMs) {
+        Metrics metrics = Calculator.calculate(steps, store.getProfile(), activeMs);
         stepsValue.setText(getString(R.string.steps_value, metrics.getSteps()));
         caloriesValue.setText(getString(R.string.calories_value, metrics.getCalories()));
         distanceValue.setText(getString(R.string.distance_value, metrics.getDistanceMeters() / 1000.0));
+    }
+
+    private void showProfileDialog() {
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_profile, null);
+        EditText heightInput = dialogView.findViewById(R.id.heightInput);
+        EditText weightInput = dialogView.findViewById(R.id.weightInput);
+        if (store.hasProfile()) {
+            UserProfile profile = store.getProfile();
+            heightInput.setText(String.valueOf(profile.getHeightCm()));
+            weightInput.setText(String.valueOf(profile.getWeightKg()));
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.profile_title)
+                .setView(dialogView)
+                .setPositiveButton(R.string.save, null)
+                .setNegativeButton(R.string.later, null)
+                .create();
+        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(view -> {
+                    UserProfile profile = new UserProfile(parseInt(heightInput), parseDouble(weightInput));
+                    if (!profile.isValid()) {
+                        heightInput.setError(getString(R.string.invalid_height));
+                        weightInput.setError(getString(R.string.invalid_weight));
+                        return;
+                    }
+                    store.saveProfile(profile);
+                    render(store.getSteps(), store.getActiveMs());
+                    startService(new Intent(this, TrackerService.class).setAction(TrackerService.ACTION_REFRESH));
+                    dialog.dismiss();
+                }));
+        store.markProfilePrompted();
+        dialog.show();
+    }
+
+    private int parseInt(EditText input) {
+        try {
+            return Integer.parseInt(input.getText().toString().trim());
+        } catch (NumberFormatException exception) {
+            return Integer.MIN_VALUE;
+        }
+    }
+
+    private double parseDouble(EditText input) {
+        try {
+            return Double.parseDouble(input.getText().toString().trim().replace(',', '.'));
+        } catch (NumberFormatException exception) {
+            return Double.NaN;
+        }
     }
 }

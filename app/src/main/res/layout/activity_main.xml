@@ -70,6 +70,12 @@
             android:layout_height="wrap_content"
             android:text="@string/reset" />
 
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

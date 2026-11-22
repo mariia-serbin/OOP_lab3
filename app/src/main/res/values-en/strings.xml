@@ -13,6 +13,14 @@
     <string name="language">Language</string>
     <string name="language_uk">Українська</string>
     <string name="language_en">English</string>
+    <string name="profile">Profile</string>
+    <string name="profile_title">Your details</string>
+    <string name="height">Height (cm)</string>
+    <string name="weight">Weight (kg)</string>
+    <string name="save">Save</string>
+    <string name="later">Later</string>
+    <string name="invalid_height">Height range: 100–250 cm</string>
+    <string name="invalid_weight">Weight range: 30–300 kg</string>
     <string name="notification_title">Activity tracker</string>
     <string name="notification_text">Steps: %1$d · Distance: %2$.2f km</string>
     <string name="channel_name">Activity tracking</string>
