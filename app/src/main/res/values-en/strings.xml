@@ -21,4 +21,7 @@
     <string name="notifications_permission_title">Notifications</string>
     <string name="notifications_permission_message">Notifications are needed for background tracking.</string>
     <string name="permission_denied">Permission denied</string>
+    <string name="value_placeholder">0</string>
+    <string name="tracking_active">Tracking active</string>
+    <string name="tracking_stopped">Tracking stopped</string>
 </resources>

@@ -21,4 +21,7 @@
     <string name="notifications_permission_title">Сповіщення</string>
     <string name="notifications_permission_message">Для фонового відстеження потрібні сповіщення.</string>
     <string name="permission_denied">Дозвіл відхилено</string>
+    <string name="value_placeholder">0</string>
+    <string name="tracking_active">Відстеження активне</string>
+    <string name="tracking_stopped">Відстеження зупинено</string>
 </resources>
